@@ -15,5 +15,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "project_id_seq")
     private Long projectId;
 
+    private Long userId;
+
     private String note;
 }

@@ -4,10 +4,7 @@ import com.cxx.server.Entity.Project;
 import com.cxx.server.Entity.UserInfo;
 import com.cxx.server.dao.ProjectDAO;
 import com.cxx.server.dao.UserInfoDAO;
-import com.cxx.server.dto.FailedResponse;
-import com.cxx.server.dto.ProjectDTO;
-import com.cxx.server.dto.ResponseDTO;
-import com.cxx.server.dto.SuccessResponse;
+import com.cxx.server.dto.*;
 import com.cxx.server.service.CommonCRUDService;
 import com.cxx.server.vo.ProjectVO;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +25,10 @@ public class ProjectServiceImpl implements CommonCRUDService<ProjectDTO, Project
 
     @Override
     public ResponseDTO<ProjectVO> create(ProjectDTO projectDTO) {
+        if (projectDTO.getProjectId() != null) return new ErrorResponse<>("Id should be null");
+        if (projectDAO.existsByUserIdAndProjectName(projectDTO.getUserId(), projectDTO.getProjectName()))
+            return new ErrorResponse<>("Project name is already exist");
+
         Project project = new Project();
         BeanUtils.copyProperties(projectDTO, project);
         Project saved = projectDAO.save(project);
@@ -38,6 +39,11 @@ public class ProjectServiceImpl implements CommonCRUDService<ProjectDTO, Project
 
     @Override
     public ResponseDTO<ProjectVO> update(ProjectDTO projectDTO) {
+        if (projectDTO.getProjectId() == null) return new ErrorResponse<>("Id should not be null");
+        if (!projectDAO.existsById(projectDTO.getProjectId())) return new ErrorResponse<>("Project is not exist");
+        if (projectDAO.existsByUserIdAndProjectName(projectDTO.getUserId(), projectDTO.getProjectName()))
+            return new ErrorResponse<>("Project name is already exist");
+
         Project project = new Project();
         BeanUtils.copyProperties(projectDTO, project);
         Project saved = projectDAO.save(project);
@@ -64,18 +70,12 @@ public class ProjectServiceImpl implements CommonCRUDService<ProjectDTO, Project
     }
 
     public ResponseDTO<List<ProjectVO>> getAll(Long userId) {
-        Optional<UserInfo> userInfoOptional = userInfoDAO.findById(userId);
-        if (userInfoOptional.isPresent()) {
-            UserInfo userInfo = userInfoOptional.get();
-            List<Project> allProjectsById = projectDAO.findAllById(userInfo.getProjects());
-            Stream<ProjectVO> projectVOStream = allProjectsById.stream().map(project -> {
-                ProjectVO projectVO = new ProjectVO();
-                BeanUtils.copyProperties(project, projectVO);
-                return projectVO;
-            });
-            return new SuccessResponse<>(projectVOStream.toList());
-        } else {
-            return new FailedResponse<>("User not found");
-        }
+        List<Project> projects = projectDAO.findAllByUserId(userId);
+        List<ProjectVO> projectVOS = projects.stream().map(project -> {
+            ProjectVO projectVO = new ProjectVO();
+            BeanUtils.copyProperties(project, projectVO);
+            return projectVO;
+        }).toList();
+        return new SuccessResponse<>(projectVOS);
     }
 }

@@ -9,6 +9,10 @@ import java.util.List;
 @Data
 @Schema(name = "UserInfoDTO", description = "用户信息")
 public class UserInfoDTO {
+    @JsonProperty("id")
+    @Schema(name = "id", description = "用户ID")
+    private Long id;
+
     @JsonProperty("user_name")
     @Schema(name = "user_name", description = "用户名")
     private String userName;
@@ -20,8 +24,4 @@ public class UserInfoDTO {
     @JsonProperty("nick_name")
     @Schema(name = "nick_name", description = "昵称")
     private String nickName;
-
-    @JsonProperty("project_ids")
-    @Schema(name = "projects", description = "拥有权限的项目ID列表")
-    private List<Long> projectIds;
 }

@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Schema(name = "RuleDTO", description = "规则信息")
 public class RuleDTO {
+    @JsonProperty("id")
+    @Schema(name = "id", description = "规则ID")
+    private Long id;
+
     @JsonProperty("project_id")
     @Schema(name = "project_id", description = "项目ID")
     private Long projectId;

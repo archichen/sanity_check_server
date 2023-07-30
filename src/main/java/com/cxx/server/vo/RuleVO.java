@@ -24,7 +24,7 @@ public class RuleVO {
 
     private String param;
 
-    private String interval;
+    private String period;
 
     private String note;
 }

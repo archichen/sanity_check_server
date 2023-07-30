@@ -13,6 +13,4 @@ public class UserInfoVO {
     private String passWord;
 
     private String nickName;
-
-    private List<Long> projects;
 }

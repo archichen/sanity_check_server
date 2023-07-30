@@ -2,11 +2,13 @@ package com.cxx.server.controller;
 
 import com.cxx.server.dto.ResponseDTO;
 import com.cxx.server.dto.RuleDTO;
+import com.cxx.server.service.serviceImpl.RuleServiceImpl;
 import com.cxx.server.vo.RuleVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/rule")
 public class RuleController {
+    @Autowired
+    RuleServiceImpl ruleService;
+
     @GetMapping("/list/{user_id}/{project_id}")
     @ResponseBody
     @Operation(summary = "获取规则列表", description = "获取规则列表", responses = {
@@ -25,19 +30,19 @@ public class RuleController {
             @Parameter(name = "project_id", description = "项目ID", required = true)
     })
     public ResponseDTO<List<RuleVO>> list(@PathVariable("user_id") Long userId, @PathVariable("project_id") Long projectId) {
-        return null;
+        return ruleService.getAll(userId, projectId);
     }
 
-    @Operation(summary = "获取规则信息", description = "通过规则Id获取规则信息",responses = {
+    @Operation(summary = "获取规则信息", description = "通过规则Id获取规则信息", responses = {
             @ApiResponse(responseCode = "200", description = "获取规则信息成功"),
             @ApiResponse(responseCode = "500", description = "获取规则信息失败")
-    },  parameters = {
+    }, parameters = {
             @Parameter(name = "rule_id", description = "规则ID", required = true)
     })
     @GetMapping("/get/{rule_id}")
     @ResponseBody
-    public ResponseDTO<RuleVO> get(@PathVariable("rule_id") Long RuleId) {
-        return null;
+    public ResponseDTO<RuleVO> get(@PathVariable("rule_id") Long ruleId) {
+        return ruleService.get(ruleId);
     }
 
     @Operation(summary = "创建规则", description = "创建规则", responses = {
@@ -47,30 +52,28 @@ public class RuleController {
     @PostMapping("/create")
     @ResponseBody
     public ResponseDTO<RuleVO> create(@RequestBody RuleDTO ruleDTO) {
-        return null;
+        return ruleService.create(ruleDTO);
     }
 
     @Operation(summary = "删除规则", description = "删除规则", responses = {
             @ApiResponse(responseCode = "200", description = "删除规则成功"),
             @ApiResponse(responseCode = "500", description = "删除规则失败")
     }, parameters = {
-        @Parameter(name = "rule_id", description = "规则ID", required = true)
+            @Parameter(name = "rule_id", description = "规则ID", required = true)
     })
     @PostMapping("/delete/{rule_id}")
     @ResponseBody
-    public ResponseDTO<RuleVO> delete(@PathVariable("rule_id") Long rule_id) {
-        return null;
+    public void delete(@PathVariable("rule_id") Long rule_id) {
+        ruleService.delete(rule_id);
     }
 
     @Operation(summary = "更新规则", description = "更新规则", responses = {
             @ApiResponse(responseCode = "200", description = "更新规则成功"),
             @ApiResponse(responseCode = "500", description = "更新规则失败")
-    }, parameters = {
-        @Parameter(name = "rule_id", description = "规则ID", required = true)
-    })
-    @PostMapping("/update/{rule_id}")
+    }, requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "规则信息", required = true, content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = RuleDTO.class))))
+    @PostMapping("/update")
     @ResponseBody
-    public ResponseDTO<RuleVO> update(@PathVariable("rule_id") Long ruleId) {
-        return null;
+    public ResponseDTO<RuleVO> update(@RequestBody RuleDTO ruleDTO) {
+        return ruleService.update(ruleDTO);
     }
 }

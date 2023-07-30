@@ -32,7 +32,7 @@ public class Rule {
 
     private String param;
 
-    private String interval;
+    private String period;
 
     private String note;
 }

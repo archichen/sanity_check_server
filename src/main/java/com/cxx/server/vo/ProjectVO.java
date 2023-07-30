@@ -14,6 +14,9 @@ public class ProjectVO {
     @Schema(name = "project_id", description = "项目ID")
     private Long projectId;
 
+    @Schema(name = "user_id", description = "用户ID")
+    private Long userId;
+
     @Schema(name = "note", description = "备注")
     private String note;
 }

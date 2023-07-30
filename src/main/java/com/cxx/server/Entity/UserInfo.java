@@ -17,7 +17,4 @@ public class UserInfo {
     private String passWord;
 
     private String nickName;
-
-    @ElementCollection
-    private List<Long> projects;
 }

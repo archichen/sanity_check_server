@@ -7,6 +7,10 @@ import lombok.Data;
 @Data
 @Schema(name = "SourceDTO", description = "数据源信息")
 public class SourceDTO {
+    @JsonProperty("id")
+    @Schema(name = "id", description = "数据源ID")
+    private Long id;
+
     @JsonProperty("name")
     @Schema(name = "name", description = "数据源名")
     private String name;
